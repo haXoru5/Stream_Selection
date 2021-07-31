@@ -38,7 +38,7 @@ int main(){
     }
 
     struct student students[studentcount];      //inputs the student data into the structs
-    for(int k = 0; k < studentcount; k++){
+    for(int k = 0; k < studentcount; k++){      //needs malloc on line 40
         students[k].studentnum = 400277000 + k;         //student number doesn't really matter so it is just incremental
         students[k].gpa = normal[k];
         for(int j = 0; j < 10; j++){        //appends top 10 choices (randomly uniformly generated) into array
@@ -46,7 +46,7 @@ int main(){
         }
     }
 
-    FILE *stulist = fopen("students.txt", "w+");
+    FILE *stulist = fopen("students.txt", "w+");        //prints student data into txt file
     fprintf(stulist,"Student #\tGPA\tChoice Ranking\n");
     for(int i = 0; i < studentcount; i++){
         fprintf(stulist,"%d\t%0.1f\t[",students[i].studentnum, students[i].gpa);
