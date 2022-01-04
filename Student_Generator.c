@@ -24,7 +24,7 @@ int main(){
 
     studentcount = 500 + rand() % 101;      //generates random student count between 500 and 600
 
-    float normal[studentcount];     //normal technically isnt supposed to work, change into malloc/pointers
+    float* normal = (float*) malloc(studentcount*(sizeof(float)));
     for(int i = 0; i < studentcount; i++){      //generates normal distribution of grades centered at 7 with a standard deviation of 2 using Box-Muller transform
         float z;
         do{
@@ -37,12 +37,51 @@ int main(){
         normal[i] = z;
     }
 
-    struct student students[studentcount];      //inputs the student data into the structs
-    for(int k = 0; k < studentcount; k++){      //needs malloc on line 40
+    int** choicelist = (int**) malloc(studentcount*sizeof(int*));       //generates 2D array for students' top 10 stream choices
+
+    int streams[30];
+    for (int i = 0; i < 30; i++)
+    {
+        streams[i] = i;
+    }
+
+    for (int i = 0; i < studentcount; i++)
+    {
+        
+        for (int n = 29; n > 0; n--)        //randomizes array using Fisher-Yates shuffle
+        {
+            int rnum = rand() % n;
+            int rval = streams[rnum];
+            streams[rnum] = streams[n];
+            streams[n] = rval;
+        }
+        
+        choicelist[i] = (int*) malloc(10*sizeof(int));
+        for (int j = 0; j < 10; j++)        //appends first 10 elements of the shuffled array
+        {
+            choicelist[i][j] = streams[j];
+        }
+        
+    }
+/*
+    for (int i = 0; i < studentcount; i++)
+    {
+        printf("i = %d [", i);
+        for (int j = 0; j < 10; j++)
+        {
+            printf("%d, ", choicelist[i][j]);
+        }
+        printf("]\n");
+    }
+*/    
+
+    struct student* students = (struct student*) malloc(studentcount*sizeof(struct student));
+
+    for(int k = 0; k < studentcount; k++){
         students[k].studentnum = 400277000 + k;         //student number doesn't really matter so it is just incremental
         students[k].gpa = normal[k];
-        for(int j = 0; j < 10; j++){        //appends top 10 choices (randomly uniformly generated) into array
-            students[k].choices[j] = rand() % 31;       //does NOT check for uniqueness
+        for(int j = 0; j < 10; j++){        //appends top 10 choices into array
+            students[k].choices[j] = choicelist[k][j];
         }
     }
 
@@ -60,6 +99,8 @@ int main(){
     }
     fclose(stulist);
 
+    free(normal);
+    free(students);
     return 0;
 }
 
